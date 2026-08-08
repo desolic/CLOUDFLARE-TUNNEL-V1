@@ -1,0 +1,42 @@
+# Shared Cloudflare Tunnel — deploy ONCE per host and reuse it for every
+# app that should be reachable from the internet. All apps join the
+# `cloudflare-tunnel` network created below; each is exposed by adding a
+# Public Hostname to this tunnel in the Cloudflare Zero Trust dashboard
+# (Networks → Tunnels → <this tunnel> → Public Hostname → Add), pointing
+# to `http://<container-name>:<port>`.
+#
+# The `cloudflare-tunnel` network is `internal: true` — no app on it has
+# a direct path to the internet. Only cloudflared itself is also on a
+# second, `egress` network for its outbound connection to Cloudflare.
+#
+# Secret in the .env file next to this one (never commit it):
+#   CF_TUNNEL_TOKEN = from the Cloudflare Zero Trust tunnel
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2026.5.2
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN:?set CF_TUNNEL_TOKEN in .env}
+    networks:
+      - cloudflare-tunnel
+      - egress
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 128m
+    pids_limit: 100
+    cpus: 0.5
+
+networks:
+  # Created here, referenced by every app project as `external: true`.
+  cloudflare-tunnel:
+    name: cloudflare-tunnel
+    driver: bridge
+    internal: true
+  # cloudflared's own outbound path to Cloudflare — only this container joins.
+  egress:
+    driver: bridge

@@ -1,0 +1,6 @@
+*.log
+
+# Secrets / local environment
+.env
+.env.*
+!.env.example
