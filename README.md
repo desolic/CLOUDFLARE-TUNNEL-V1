@@ -40,7 +40,9 @@ Zwei Docker-Netze: `cloudflare-tunnel` ist `internal: true` – App-Container da
 
 Nur ausgehender Tunnel – keine Portfreigaben auf dem Router, kein Host-Port veröffentlicht, kein Konflikt mit DSM auf 443/5001.
 
-Versionsgepinntes Image (`cloudflare/cloudflared:2026.5.2`); Token nur in der `.env`, nicht im Git.
+Versionsgepinntes Image (`cloudflare/cloudflared:2026.7.3`); Token nur in der `.env`, nicht im Git. Der eingebaute Auto-Updater ist per `--no-autoupdate` deaktiviert, damit der Pin verbindlich bleibt – Updates erfolgen durch Anheben des Tags und Neuerstellen des Containers.
+
+Das Container-Log ist auf 3 × 10 MB begrenzt (`json-file`), damit es auf dem Synology-Volume nicht unbegrenzt wächst.
 
 ## Build & Start
 
