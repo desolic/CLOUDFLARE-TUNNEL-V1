@@ -34,7 +34,9 @@ Die App bekommt dadurch keinen veröffentlichten Host-Port und hat keinen direkt
 
 ## Sicherheitsmerkmale
 
-Läuft unprivilegiert (`no-new-privileges:true`, `cap_drop: ALL`) mit Ressourcen-Limits (`mem_limit`, `pids_limit`, `cpus`); das cloudflared-Image ist distroless und startet standardmäßig als UID `65532` (nonroot).
+Läuft unprivilegiert (`no-new-privileges:true`, `cap_drop: ALL`) mit Ressourcen-Limits (`mem_limit`, `pids_limit`, `cpu_shares`); das cloudflared-Image ist distroless und startet standardmäßig als UID `65532` (nonroot).
+
+Ein hartes CPU-Limit (`cpus`) ist bewusst nicht gesetzt: Es bildet auf eine CFS-Quota ab, die Synology-Kernel in der Regel nicht unterstützen – der Docker-Daemon lehnt den Container dann mit `nanoCPUs cannot be set …` ab. `cpu_shares` gewichtet stattdessen die CPU-Zeit bei Konkurrenz und kommt ohne Quota-Unterstützung aus.
 
 Zwei Docker-Netze: `cloudflare-tunnel` ist `internal: true` – App-Container darauf haben keinen Internetzugang; nur cloudflared selbst hängt zusätzlich auf einem privaten `egress`-Bridge, um Cloudflare zu erreichen.
 
