@@ -6,6 +6,8 @@ Geteilter Cloudflare Tunnel – als eigenständiger Docker-Container auf der Syn
 
 Für weitere Informationen das Dokument "DESOLIC – LEITFADEN CLOUDFLARE TUNNEL" im INTNET aufrufen.
 
+Schrittweise Installation über den Synology Container Manager – ohne Git und ohne SSH – in [INSTALL.md](INSTALL.md).
+
 ## Konfiguration
 
 Sämtliche Einstellungen erfolgen über Umgebungsvariablen (GUI → Container → Umgebung) bzw. über die `.env`-Datei des `docker compose`-Projekts. Es ist kein Terminal/interaktive Eingabe nötig. Eine vollständige Liste steht in `.env.example`.
