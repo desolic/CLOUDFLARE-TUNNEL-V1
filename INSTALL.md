@@ -101,14 +101,29 @@ Der Auto-Updater ist per `--no-autoupdate` deaktiviert, damit der Versions-Pin v
 
 ## Fehlerbilder
 
-| Symptom | Ursache und Behebung |
-|---|---|
-| `nanoCPUs cannot be set as your kernel does not support cpu cfs scheduler` | Ein `cpus:`-Limit in der Compose-Datei. Synology-Kernel sind meist ohne `CONFIG_CFS_BANDWIDTH` gebaut. Zeile entfernen bzw. durch `cpu_shares` ersetzen – die Fassung in diesem Repo tut das bereits. |
-| Container läuft, Dashboard zeigt *Inactive* | Token unvollständig kopiert. Compose-Datei öffnen, Token vollständig neu einsetzen, Projekt neu erstellen. |
-| **502 Bad Gateway** | App hängt nicht am Netz `cloudflare-tunnel`; `container_name` weicht von der URL im Dashboard ab; falscher Port; oder die App lauscht intern auf `127.0.0.1` statt `0.0.0.0`. |
-| App startet nicht, Netz nicht gefunden | Das Tunnel-Projekt läuft nicht – es erzeugt `cloudflare-tunnel` und muss zuerst gestartet sein. |
-| App erreicht kein Internet | Kein Fehler, sondern Absicht (`internal: true`). Anwendungen mit ausgehendem Bedarf – OAuth, SMTP, externe APIs – brauchen zusätzlich ein eigenes Egress-Netz. |
-| Ressourcen-Limits wirkungslos | Älteres DSM mit dem alten Docker-Paket statt Container Manager: dort fehlt Compose v2, `mem_limit` und `pids_limit` werden stillschweigend ignoriert. |
+### `nanoCPUs cannot be set as your kernel does not support cpu cfs scheduler`
+
+Ein `cpus:`-Limit in der Compose-Datei. Synology-Kernel sind meist ohne `CONFIG_CFS_BANDWIDTH` gebaut, wodurch das Setting nicht wirkungslos, sondern ein harter Startfehler ist. Zeile entfernen bzw. durch `cpu_shares` ersetzen – die Fassung in diesem Repository tut das bereits.
+
+### Container läuft, Dashboard zeigt *Inactive*
+
+Token unvollständig kopiert. Compose-Datei öffnen, Token vollständig neu einsetzen, Projekt neu erstellen.
+
+### 502 Bad Gateway
+
+Vier mögliche Ursachen: Die App hängt nicht am Netz `cloudflare-tunnel`; ihr `container_name` weicht von der URL im Dashboard ab; der Port stimmt nicht; oder die App lauscht intern auf `127.0.0.1` statt `0.0.0.0` und ist damit für andere Container unerreichbar.
+
+### App startet nicht, Netz nicht gefunden
+
+Das Tunnel-Projekt läuft nicht. Es erzeugt `cloudflare-tunnel` und muss zuerst gestartet sein.
+
+### App erreicht kein Internet
+
+Kein Fehler, sondern Absicht (`internal: true`). Anwendungen mit ausgehendem Bedarf – OAuth, SMTP, externe APIs – brauchen zusätzlich ein eigenes Egress-Netz.
+
+### Ressourcen-Limits wirkungslos
+
+Älteres DSM mit dem alten Docker-Paket statt Container Manager: Dort fehlt Compose v2, `mem_limit` und `pids_limit` werden stillschweigend ignoriert.
 
 ## Warum „Projekt" und nicht „Container erstellen"
 
