@@ -15,7 +15,7 @@
 services:
   cloudflared:
     image: cloudflare/cloudflared:2026.7.3
-    container_name: cloudflared
+    container_name: intnet-cloudflare-tunnel
     restart: unless-stopped
     # --no-autoupdate: cloudflared's updater is on by default and has no
     # container awareness. In this distroless image it runs as nonroot and
@@ -37,7 +37,12 @@ services:
     # `restart: unless-stopped` would turn into a restart loop.
     mem_limit: 256m
     pids_limit: 100
-    cpus: 0.5
+    # `cpus` is deliberately not set: it maps to a CFS quota, and Synology
+    # kernels generally ship without CONFIG_CFS_BANDWIDTH, so the daemon
+    # rejects the container outright ("nanoCPUs cannot be set as your kernel
+    # does not support cpu cfs scheduler"). cpu_shares only weights CPU time
+    # under contention, needs no quota support, and is enough here.
+    cpu_shares: 512
     # cloudflared logs every connection registration and reconnect. Without
     # a cap these grow unbounded on the host volume.
     logging:
