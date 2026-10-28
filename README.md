@@ -1,6 +1,6 @@
 # INTNET-CLOUDFLARE-TUNNEL
 
-DESOLIC-IT PROJECT (shared infrastructure)
+DESOLIC-IT PROJECT 587U46
 
 Geteilter Cloudflare Tunnel – als eigenständiger Docker-Container auf der Synology, der als einziger Ingress für beliebig viele Anwendungen dient. Andere Container werden im Cloudflare Zero Trust Dashboard über zusätzliche Public Hostnames auf `http://<container-name>:<port>` freigegeben und hängen sich am geteilten Netzwerk `cloudflare-tunnel` ein.
 
